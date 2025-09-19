@@ -28,26 +28,26 @@ A Python toolkit for representing histone post-translational modification (PTM) 
 ## 📂 Repository Structure
 
 PTM-flux-model/
-│
-├── data/
-│ ├── nodes.txt # exported list of histone states from R
-│ └── abundances.csv # abundances for each state at t0, t1, t2...
-│
-├── src/
-│ ├── parse_nodes.py # parse node strings into modification sets
-│ ├── build_edges.py # adjacency detection + edge validation
-│ ├── flux_solver.py # linear programming to infer fluxes
-│ └── visualize_graph.py # (optional) plotting with NetworkX
-│
-├── tests/
-│ ├── test_parse_nodes.py
-│ ├── test_build_edges.py
-│ └── test_flux_solver.py
-│
-├── notebooks/
-│ └── exploratory.ipynb # Jupyter notebook for manual inspection
-│
-└── README.md # project description, goals, usage
+  - │
+  - ├── data/
+  - │   ├── nodes.txt              # exported list of histone states from R
+  - │   └── abundances.csv         # abundances for each state at t0, t1, t2...
+  - │
+  - ├── src/
+  - │   ├── parse_nodes.py         # parse node strings into modifications
+  - │   ├── build_edges.py         # adjacency detection + edge validation
+  - │   ├── flux_solver.py         # linear programming to infer fluxes
+  - │   └── visualize_graph.py     # (optional) plotting with NetworkX
+  - │
+  - ├── tests/
+  - │   ├── test_parse_nodes.py
+  - │   ├── test_build_edges.py
+  - │   └── test_flux_solver.py
+  - │
+  - ├── notebooks/
+  - │   └── exploratory.ipynb      # Jupyter notebook for manual inspection
+  - │
+  - └── README.md                  # project description, goals, usage
 
 
 ---

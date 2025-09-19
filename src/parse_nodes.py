@@ -18,7 +18,7 @@ def parse_modifications(node_str: str) -> set:
     """
     if not node_str or node_str.strip() == "":
         return set()
-    return set(node_str.split(" + "))
+    return set(node_str.split(" "))
 
 
 if __name__ == "__main__":

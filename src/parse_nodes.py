@@ -1,33 +1,32 @@
-from itertools import combinations
+"""
+parse_nodes.py
 
-# Load nodes from a text file
-with open("nodes.txt", "r") as file:
-    nodes = [line.strip() for line in file]
+Utility functions to parse histone modification state strings into sets of modifications.
+Example:
+    "H3K9me1 + H3K14ac" -> {"H3K9me1", "H3K14ac"}
+"""
 
-# Function to split node string into modifications
-def parse_modifications(node):
-    return set(node.split(" + "))
+def parse_modifications(node_str: str) -> set:
+    """
+    Parse a node string into a set of modification tokens.
+    
+    Args:
+        node_str (str): Node label, e.g. "H3K9me1 + H3K14ac".
+    
+    Returns:
+        set: A set of modifications, e.g. {"H3K9me1", "H3K14ac"}.
+    """
+    if not node_str or node_str.strip() == "":
+        return set()
+    return set(node_str.split(" + "))
 
-# Function to check if two nodes differ by a single modification
-def is_adjacent(node1, node2):
-    mods1 = parse_modifications(node1)
-    mods2 = parse_modifications(node2)
-    difference = mods1.symmetric_difference(mods2)
-    return len(difference) == 1
 
-# Identify edges between adjacent nodes
-edges = []
-for node1, node2 in combinations(nodes, 2):  # Pairwise comparison
-    if is_adjacent(node1, node2):
-        edges.append((node1, node2))
-
-# Print edges
-print("Detected edges:")
-for edge in edges:
-    print(f"{edge[0]} -> {edge[1]}")
-
-# Optional: Save edges to a file
-with open("edges.txt", "w") as f:
-    for edge in edges:
-        f.write(f"{edge[0]}\t{edge[1]}\n")
-
+if __name__ == "__main__":
+    # Example usage
+    test_nodes = [
+        "H3K9me1",
+        "H3K9me2 + H3K14ac",
+        "",
+    ]
+    for node in test_nodes:
+        print(f"{node} -> {parse_modifications(node)}")

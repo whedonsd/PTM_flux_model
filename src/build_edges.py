@@ -1,46 +1,73 @@
-# Function to check if two nodes differ by a single modification
-def is_adjacent(node1, node2):
+"""
+build_edges.py
+
+Detect adjacency between histone modification states and build validated edge lists.
+"""
+
+from itertools import combinations
+from parse_nodes import parse_modifications
+
+INPUT_FILE = "data/nodes.txt"
+OUTPUT_FILE = "data/validated_edges.txt"
+
+
+def is_adjacent(node1: str, node2: str) -> bool:
+    """
+    Check if two nodes differ by exactly one modification.
+    
+    Args:
+        node1 (str), node2 (str): Node labels.
+    
+    Returns:
+        bool: True if adjacent, False otherwise.
+    """
     mods1 = parse_modifications(node1)
     mods2 = parse_modifications(node2)
-    difference = mods1.symmetric_difference(mods2)  # Check differing elements
+    difference = mods1.symmetric_difference(mods2)
     return len(difference) == 1
 
-# Edge validation function
-def validate_edges(edges):
-    validated_edges = set()
-    for edge in edges:
-        source, target = edge
-        
-        # Self-loop check
-        if source == target:
-            print(f"Skipping self-loop: {source}")
-            continue
-        
-        # Ensuring uniqueness and directionality (optional)
-        if (target, source) in validated_edges:  # Avoid duplicate bidirectional edges
-            print(f"Skipping duplicate edge: {source} -> {target}")
-            continue
-        
-        # Add the validated edge
-        validated_edges.add((source, target))
+
+def validate_edges(edges: list) -> set:
+    """
+    Validate edges by removing self-loops and duplicates.
     
-    return validated_edges
+    Args:
+        edges (list): List of (source, target) tuples.
+    
+    Returns:
+        set: Validated edges.
+    """
+    validated = set()
+    for source, target in edges:
+        if source == target:
+            continue  # Skip self-loops
+        if (target, source) in validated:
+            continue  # Skip duplicate bidirectional edge
+        validated.add((source, target))
+    return validated
 
-# Identify edges between adjacent nodes
-edges = []
-for node1, node2 in combinations(nodes, 2):  # Pairwise comparison
-    if is_adjacent(node1, node2):
-        edges.append((node1, node2))
 
-# Validate edges to remove self-loops, duplicates
-validated_edges = validate_edges(edges)
+def main():
+    # Load nodes
+    with open(INPUT_FILE, "r") as file:
+        nodes = [line.strip() for line in file if line.strip()]
 
-# Print validated edges
-print("\nValidated edges:")
-for edge in validated_edges:
-    print(f"{edge[0]} -> {edge[1]}")
+    # Detect edges
+    raw_edges = []
+    for node1, node2 in combinations(nodes, 2):
+        if is_adjacent(node1, node2):
+            raw_edges.append((node1, node2))
 
-# Optional: Save edges to a file
-with open("validated_edges.txt", "w") as f:
-    for edge in validated_edges:
-        f.write(f"{edge[0]}\t{edge[1]}\n")
+    # Validate edges
+    edges = validate_edges(raw_edges)
+
+    # Save to file
+    with open(OUTPUT_FILE, "w") as f:
+        for src, tgt in edges:
+            f.write(f"{src}\t{tgt}\n")
+
+    print(f"Validated edges written to {OUTPUT_FILE}")
+
+
+if __name__ == "__main__":
+    main()

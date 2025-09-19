@@ -7,13 +7,10 @@ Detect adjacency between histone modification states and build validated edge li
 from itertools import combinations
 from parse_nodes import parse_modifications
 
-INPUT_FILE = "data/nodes.txt"
-OUTPUT_FILE = "data/validated_edges.txt"
-
-
 def is_adjacent(node1: str, node2: str) -> bool:
     """
     Check if two nodes differ by exactly one modification.
+    Includes adjacency between modified and unmodified states.
     
     Args:
         node1 (str), node2 (str): Node labels.
@@ -24,7 +21,19 @@ def is_adjacent(node1: str, node2: str) -> bool:
     mods1 = parse_modifications(node1)
     mods2 = parse_modifications(node2)
     difference = mods1.symmetric_difference(mods2)
-    return len(difference) == 1
+
+    # Case 1: differ by exactly one modification (add/remove)
+    if len(difference) == 1:
+        return True
+
+    # Case 2: differ by exactly two tokens at the same residue (e.g., K9me1 <-> K9me2)
+    if len(difference) == 2:
+        m1, m2 = list(difference)
+        # Same residue, different state (e.g., "K9me1" vs "K9me2")
+        if m1[:2] == m2[:2]:  # both start with the same residue ID like "K9"
+            return True
+
+    return False
 
 
 def validate_edges(edges: list) -> set:
